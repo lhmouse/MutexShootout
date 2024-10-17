@@ -76,3 +76,71 @@ private:
 }
 
 #endif // _WIN32
+
+#if HAS_MCFGTHREAD
+
+#include <mcfgthread/mutex.h>
+
+namespace shootout {
+
+class mcf_mutex
+{
+public:
+    constexpr mcf_mutex()
+        : mtx_()
+    {
+    }
+
+    ~mcf_mutex()
+    {
+    }
+
+    mcf_mutex(const mcf_mutex&) = delete;
+    mcf_mutex& operator=(const mcf_mutex&) = delete;
+
+    void lock()
+    {
+        ::_MCF_mutex_lock(&mtx_, nullptr);  // infinite timeout
+    }
+
+    void unlock()
+    {
+        ::_MCF_mutex_unlock(&mtx_);
+    }
+
+private:
+    ::_MCF_mutex mtx_;
+};
+
+class mcf_mutex_noinline
+{
+public:
+    constexpr mcf_mutex_noinline()
+        : mtx_()
+    {
+    }
+
+    ~mcf_mutex_noinline()
+    {
+    }
+
+    mcf_mutex_noinline(const mcf_mutex_noinline&) = delete;
+    mcf_mutex_noinline& operator=(const mcf_mutex_noinline&) = delete;
+
+    void lock()
+    {
+        ::_MCF_mutex_lock_slow(&mtx_, nullptr);  // infinite timeout
+    }
+
+    void unlock()
+    {
+        ::_MCF_mutex_unlock_slow(&mtx_);
+    }
+
+private:
+    ::_MCF_mutex mtx_;
+};
+
+} // namespace shootout
+
+#endif // HAS_MCFGTHREAD

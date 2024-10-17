@@ -42,11 +42,14 @@ int main(int argc, char *argv[])
 {
     if (argc != 3)
     {
+        std::cerr << "Usage: " << argv[0] << " threadCount nolocks|std|boost";
 #if _WIN32
-        std::cerr << "Usage: " << argv[0] << " threadCount nolocks|std|boost|cs0|cs4k|srw\n";
-#else
-        std::cerr << "Usage: " << argv[0] << " threadCount nolocks|std|boost\n";
+        std::cerr << "|cs0|cs4k|srw";
 #endif
+#if HAS_MCFGTHREAD
+        std::cerr << "|mcf|mcf0i";
+#endif
+        std::cerr << std::endl;
         return 1;
     }
     char *end;
@@ -91,6 +94,18 @@ int main(int argc, char *argv[])
     {
         elapsed_secs = run_benchmark<shootout::srw_mutex>(keys, thread_count, OP_COUNT, LRU_SIZE);
         std::cout << "srw_mutex:        " << elapsed_secs << std::endl;
+    }
+#endif
+#if HAS_MCFGTHREAD
+    else if (mutex_arg == "mcf")
+    {
+        elapsed_secs = run_benchmark<shootout::mcf_mutex>(keys, thread_count, OP_COUNT, LRU_SIZE);
+        std::cout << "mcf_mutex:        " << elapsed_secs << std::endl;
+    }
+    else if (mutex_arg == "mcf0i")
+    {
+        elapsed_secs = run_benchmark<shootout::mcf_mutex_noinline>(keys, thread_count, OP_COUNT, LRU_SIZE);
+        std::cout << "mcf_mutex (noinline): " << elapsed_secs << std::endl;
     }
 #endif
     else if (mutex_arg == "nolocks")
