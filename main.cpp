@@ -42,11 +42,11 @@ int main(int argc, char *argv[])
 {
     if (argc != 3)
     {
+        std::cerr << "Usage: " << argv[0] << " threadCount nolocks|std|boost";
 #ifdef _WIN32
-        std::cerr << "Usage: " << argv[0] << " threadCount nolocks|std|boost|cs0|cs4k|srw\n";
-#else
-        std::cerr << "Usage: " << argv[0] << " threadCount nolocks|std|boost\n";
+        std::cerr << "|cs0|cs4k|srw";
 #endif
+        std::cerr << '\n';
         return 1;
     }
     char *end;
