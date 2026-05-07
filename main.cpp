@@ -42,7 +42,7 @@ int main(int argc, char *argv[])
 {
     if (argc != 3)
     {
-#if _WIN32
+#ifdef _WIN32
         std::cerr << "Usage: " << argv[0] << " threadCount nolocks|std|boost|cs0|cs4k|srw\n";
 #else
         std::cerr << "Usage: " << argv[0] << " threadCount nolocks|std|boost\n";
@@ -76,7 +76,7 @@ int main(int argc, char *argv[])
         elapsed_secs = run_benchmark<boost::mutex>(keys, thread_count, OP_COUNT, LRU_SIZE);
         std::cout << "boost::mutex:     " << elapsed_secs << std::endl;
     }
-#if _WIN32
+#ifdef _WIN32
     else if (mutex_arg == "cs0")
     {
         elapsed_secs = run_benchmark<shootout::cs_mutex<0>>(keys, thread_count, OP_COUNT, LRU_SIZE);
