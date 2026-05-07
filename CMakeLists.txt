@@ -18,9 +18,18 @@ if (UNIX)
 	find_package(Boost COMPONENTS system REQUIRED)
 endif()
 
+if (WIN32)
+	pkg_check_modules(mcfgthread mcfgthread)
+endif()
+
 add_executable(MutexShootout main.cpp MurmurHash3.cpp lru_cache.hpp MurmurHash3.h hashing.hpp alt_mutex.hpp stopwatch.hpp)
 
 if(UNIX)
 	target_link_libraries(MutexShootout ${Boost_SYSTEM_LIBRARY})
 	target_link_libraries(MutexShootout ${CMAKE_THREAD_LIBS_INIT})
+endif()
+
+if (mcfgthread_FOUND)
+	target_link_libraries(MutexShootout ${mcfgthread_LINK_LIBRARIES})
+	target_compile_definitions(MutexShootout PUBLIC HAS_MCFGTHREAD)
 endif()
